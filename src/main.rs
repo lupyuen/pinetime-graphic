@@ -1,6 +1,3 @@
-//  cargo build
-//  cargo run -v pinetime-graphic.png
-
 #![feature(rustc_private)]
 #![allow(non_upper_case_globals)]
 
