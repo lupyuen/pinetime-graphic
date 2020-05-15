@@ -75,6 +75,40 @@ fn final_channels(c: png::ColorType, trns: bool) -> u8 {
         RGBA => 4,
     }
 }
+
+const ROW_COUNT: usize = 240;
+const COL_COUNT: usize = 240;
+const BYTES_PER_PIXEL: usize = 3;
+
+fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
+    // The decoder is a build for reader and can be used to set various decoding options
+    // via `Transformations`. The default output transformation is `Transformations::EXPAND
+    // | Transformations::STRIP_ALPHA`.
+    let decoder = png::Decoder::new(File::open(fname).unwrap());
+    let (info, mut reader) = decoder.read_info().unwrap();
+    // Allocate the output buffer.
+    let mut buf = vec![0; info.buffer_size()];
+    // Read the next frame. Currently this function should only called once.
+    // The default options
+    reader.next_frame(&mut buf).unwrap();
+    println!("Buffer Size: {}", info.buffer_size());
+    for row in 0..ROW_COUNT {
+        for col in 0..COL_COUNT {
+            let index = ((row * COL_COUNT) + col) * BYTES_PER_PIXEL;
+            let r = buf[index];
+            let g = buf[index + 1];
+            let b = buf[index + 2];
+            //  Write out RRRRRGGG GGGBBBBB
+            
+        }
+    }
+
+    for i in &buf[50_000..50_000+200] {
+        print!(" {:x} ", i);
+    }
+    Ok(())
+}
+
 fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     // TODO improve performance by resusing allocations from decoder
     use png::Decoded::*;
@@ -267,7 +301,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                         }
                     }
                     ImageData => {
-                        //println!("got {} bytes of image data", data.len())
+                        //  println!("got {} bytes of image data", data.len())
                     }
                     ChunkComplete(_, type_str) if c.verbose => {
                         use png::chunk::*;
@@ -333,9 +367,9 @@ fn main() {
     let m = parse_args();
 
     let config = Config {
-        quiet: m.opt_present("q"),
-        verbose: m.opt_present("v"),
-        color: m.opt_present("c"),
+        quiet: false,  //  m.opt_present("q"),
+        verbose: true, //  m.opt_present("v"),
+        color: false,  //  m.opt_present("c"),
     };
 
     for file in m.free {
@@ -346,11 +380,15 @@ fn main() {
                     glob.try_for_each(|entry| {
                         entry
                             .map_err(|err| io::Error::new(io::ErrorKind::Other, err))
-                            .and_then(|file| check_image(config, file))
+                            .and_then(|file| {
+                                check_image(config, &file).unwrap();
+                                dump_image(config, &file)
+                        })
                     })
                 })
         } else {
-            check_image(config, &file)
+            check_image(config, &file).unwrap();
+            dump_image(config, &file)
         };
 
         result.unwrap_or_else(|err| {
