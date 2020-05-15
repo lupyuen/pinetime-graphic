@@ -76,9 +76,10 @@ fn final_channels(c: png::ColorType, trns: bool) -> u8 {
     }
 }
 
-const ROW_COUNT: usize = 2; //  240;
+const ROW_COUNT: usize = 240;
 const COL_COUNT: usize = 240;
 const BYTES_PER_PIXEL: usize = 3;
+const BYTES_PER_LINE: usize = 16;
 
 fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     // The decoder is a build for reader and can be used to set various decoding options
@@ -92,6 +93,7 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     // The default options
     reader.next_frame(&mut buf).unwrap();
     println!("Buffer Size: {}", info.buffer_size());
+    let mut count = 0;
     for row in 0..ROW_COUNT {
         for col in 0..COL_COUNT {
             let index = ((row * COL_COUNT) + col) * BYTES_PER_PIXEL;
@@ -105,7 +107,13 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
             let byte2: u8 = 
                 ((g & 0b11100) << 3) |  //  GGG00000
                 (b >> 3);               //  000BBBBB
-            print!(" 0x{:02x}, 0x{:02x},", byte1, byte2);
+            if count > 0 { print!(" ") }
+            print!("0x{:02x}, 0x{:02x},", byte1, byte2);
+            count += 2;
+            if count >= BYTES_PER_LINE {
+                count = 0;
+                print!("\n");
+            }
         }
     }
     Ok(())
