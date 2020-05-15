@@ -76,7 +76,7 @@ fn final_channels(c: png::ColorType, trns: bool) -> u8 {
     }
 }
 
-const ROW_COUNT: usize = 240;
+const ROW_COUNT: usize = 2; //  240;
 const COL_COUNT: usize = 240;
 const BYTES_PER_PIXEL: usize = 3;
 
@@ -99,12 +99,14 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
             let g = buf[index + 1];
             let b = buf[index + 2];
             //  Write out RRRRRGGG GGGBBBBB
-            
+            let byte1: u8 = 
+                (r & 0b11111000) |  //  RRRRR000
+                (g >> 5);           //  00000GGG
+            let byte2: u8 = 
+                ((g & 0b11100) << 3) |  //  GGG00000
+                (b >> 3);               //  000BBBBB
+            print!(" 0x{:02x}, 0x{:02x},", byte1, byte2);
         }
-    }
-
-    for i in &buf[50_000..50_000+200] {
-        print!(" {:x} ", i);
     }
     Ok(())
 }
