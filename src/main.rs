@@ -92,7 +92,7 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     // Read the next frame. Currently this function should only called once.
     // The default options
     reader.next_frame(&mut buf).unwrap();
-    println!("Buffer Size: {}", info.buffer_size());
+    println!("//  Buffer Size: {}", info.buffer_size());
     let mut count = 0;
     for row in 0..ROW_COUNT {
         for col in 0..COL_COUNT {
@@ -198,7 +198,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     };
 
     if c.verbose {
-        print!("File: ");
+        print!("//  File: ");
         if c.color {
             t.attr(Attr::Bold)?;
             write!(t, "{}", fname)?;
@@ -238,7 +238,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                         write!(t, "{}", fname)?;
                         t.reset()?;
                     } else {
-                        print!("OK: {}", fname)
+                        print!("//  OK: {}", fname)
                     }
                     println!(
                         " ({}x{}, {}{}, {}, {:.1}%)",
@@ -257,7 +257,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                         write!(t, "No errors detected ")?;
                         t.reset()?;
                     } else {
-                        print!("No errors detected ");
+                        print!("//  No errors detected ");
                     }
                     println!(
                         "in {} ({} chunks, {:.1}% compression)",
@@ -285,7 +285,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                         if c.verbose {
                             let chunk = String::from_utf8_lossy(&type_str);
                             println!("");
-                            print!("  chunk ");
+                            print!("//    chunk ");
                             if c.color {
                                 t.fg(color::YELLOW)?;
                                 write!(t, "{}", chunk)?;
@@ -319,7 +319,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                             IHDR => {
                                 println!("");
                                 print!(
-                                    "    {} x {} image, {}{}, {}",
+                                    "//      {} x {} image, {}{}, {}",
                                     width,
                                     height,
                                     display_image_type(bits, color),
@@ -332,7 +332,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                     }
                     AnimationControl(actl) => {
                         println!("");
-                        print!("    {} frames, {} plays", actl.num_frames, actl.num_plays,);
+                        print!("//      {} frames, {} plays", actl.num_frames, actl.num_plays,);
                     }
                     FrameControl(fctl) => {
                         println!("");
@@ -349,7 +349,7 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                             fctl.blend_op,*/
                         );
                         print!(
-                            "    {}/{} s delay, dispose: {}, blend: {}",
+                            "//      {}/{} s delay, dispose: {}, blend: {}",
                             fctl.delay_num,
                             if fctl.delay_den == 0 {
                                 100
