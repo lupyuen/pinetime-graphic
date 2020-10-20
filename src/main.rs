@@ -76,8 +76,8 @@ fn final_channels(c: png::ColorType, trns: bool) -> u8 {
     }
 }
 
-const ROW_COUNT: usize = 240;
-const COL_COUNT: usize = 240;
+static mut ROW_COUNT: usize = 240;
+static mut COL_COUNT: usize = 240;
 const BYTES_PER_PIXEL: usize = 3;
 const BYTES_PER_LINE: usize = 16;
 
@@ -94,9 +94,9 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     reader.next_frame(&mut buf).unwrap();
     println!("//  Buffer Size: {}", info.buffer_size());
     let mut count = 0;
-    for row in 0..ROW_COUNT {
-        for col in 0..COL_COUNT {
-            let index = ((row * COL_COUNT) + col) * BYTES_PER_PIXEL;
+    for row in 0..unsafe { ROW_COUNT } {
+        for col in 0..unsafe { COL_COUNT } {
+            let index = ((row * unsafe{ COL_COUNT}) + col) * BYTES_PER_PIXEL;
             let r = buf[index];
             let g = buf[index + 1];
             let b = buf[index + 2];
@@ -317,6 +317,10 @@ fn check_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
                         use png::chunk::*;
                         match type_str {
                             IHDR => {
+                                unsafe { 
+                                    COL_COUNT = width as usize; 
+                                    ROW_COUNT = height as usize;
+                                }
                                 println!("");
                                 print!(
                                     "//      {} x {} image, {}{}, {}",

@@ -10,7 +10,7 @@ static const char graphic_bytes[] = {
 };
 
 int main(void) {
-    printf("BIN file size (should be %d): %lu\n", 
+    printf("BIN file size (should be %d for bootloader): %lu\n", 
         240 * 240 * 2, 
         sizeof(graphic_bytes));
     FILE *f = fopen("pinetime-graphic.bin", "wb");
