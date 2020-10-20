@@ -1,8 +1,8 @@
-# Convert PNG graphic for PineTime Bootloader and PineTime Watch Faces
+# Convert PNG graphic to RGB565 for PineTime Watch Faces and PineTime Bootloader
 
 ## PineTime Watch Face
 
-To convert the PNG image `0.png` to RGB565 image `0.bin`...
+To convert the PNG image `0.png` (240 x 240 resolution or smaller) to RGB565 image `0.bin`...
 
 ```bash
 cargo run -v 0.png >pinetime-graphic.inc
@@ -13,7 +13,7 @@ mv pinetime-graphic.bin 0.bin
 
 ## PineTime Bootloader
 
-To convert the file `pinetime-graphic.png` to a C array...
+To convert the file `pinetime-graphic.png` (240 x 240 resolution) to a C array...
 
 ```bash
 cargo run -v pinetime-graphic.png
