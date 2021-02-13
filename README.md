@@ -9,6 +9,8 @@ To convert the PNG image `image.png` (240 x 240 resolution or smaller) to a C ar
 git clone https://github.com/lupyuen/pinetime-graphic
 cd pinetime-graphic
 
+# TODO: Copy image.png to the pinetime-graphic folder
+
 # Convert the PNG file to a C array
 cargo run -v image.png >image.inc
 ```
@@ -21,6 +23,8 @@ To convert the PNG image `0.png` (240 x 240 resolution or smaller) to RGB565 ima
 # Download the source code
 git clone https://github.com/lupyuen/pinetime-graphic
 cd pinetime-graphic
+
+# TODO: Copy 0.png to the pinetime-graphic folder
 
 # Convert the PNG file to a C array
 cargo run -v 0.png >pinetime-graphic.inc
@@ -41,6 +45,8 @@ To convert the file `pinetime-graphic.png` (240 x 240 resolution) to an RGB565 b
 # Download the source code
 git clone https://github.com/lupyuen/pinetime-graphic
 cd pinetime-graphic
+
+# TODO: Copy pinetime-graphic.png to the pinetime-graphic folder
 
 # Convert the PNG file to a C array
 cargo run -v pinetime-graphic.png >pinetime-graphic.inc
