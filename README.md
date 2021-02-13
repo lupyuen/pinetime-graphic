@@ -15,6 +15,8 @@ cd pinetime-graphic
 cargo run -v image.png >image.inc
 ```
 
+Read the article ["PineCone BL602 Blasting Pixels to ST7789 Display with LVGL Library"](https://lupyuen.github.io/articles/display)
+
 ## PineTime Watch Face
 
 To convert the PNG image `0.png` (240 x 240 resolution or smaller) to RGB565 image `0.bin`...
@@ -36,6 +38,8 @@ gcc -o export-bin export-bin.c
 ./export-bin
 mv pinetime-graphic.bin 0.bin
 ```
+
+Read the article ["Draw your own PineTime Watch Face... From WebAssembly to Embedded Rust"](https://lupyuen.github.io/pinetime-rust-mynewt/articles/handdrawn)
 
 ## PineTime Bootloader
 
