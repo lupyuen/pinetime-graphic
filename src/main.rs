@@ -87,7 +87,6 @@ const BYTES_PER_LINE: usize = 16;
 
 /// Dump image as RGB565 or black and white
 fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
-    println!("//  Min: {}, Max: {}", c.min, c.max);
     if c.min.len() == 0 && c.max.len() == 0 {
         //  Dump as RGB565
         dump_image_rgb565(c, fname)
@@ -100,6 +99,10 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
 /// Dump image as black and white
 /// cargo run -- --min 0 --max 128 uart-cartoon2.png
 fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
+    println!("//  Min: {}, Max: {}", c.min, c.max);
+    let min: u32 = c.min.parse().unwrap();
+    let max: u32 = c.max.parse().unwrap();
+
     // The decoder is a build for reader and can be used to set various decoding options
     // via `Transformations`. The default output transformation is `Transformations::EXPAND
     // | Transformations::STRIP_ALPHA`.
@@ -120,7 +123,8 @@ fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
             let g = buf[index + 1] as u32;
             let b = buf[index + 2] as u32;
             //  Set bit to 1 if RGB is above threshold
-            if r + g + b > 128 * 3 {
+            if r + g + b >= min * 3
+                &&  r + g + b <= max * 3 {
                 byte = byte | 1;
             }
             //  Shift the bit
