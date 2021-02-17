@@ -115,33 +115,33 @@ fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     // The default options
     reader.next_frame(&mut buf).unwrap();
     println!("//  Rows: {}, Columns: {}, Buffer Size: {}", unsafe { ROW_COUNT }, unsafe { COL_COUNT }, info.buffer_size());
-    let mut count = 0;
+    let mut byte_count = 0;
+    let mut bit_count = 0;
     let mut byte: u8 = 0;
-    for col in 0..unsafe { COL_COUNT } {
-        for row in 0..unsafe { ROW_COUNT } {
-            let index = ((row * unsafe{ COL_COUNT}) + col) * BYTES_PER_PIXEL;
+    for row in 0..unsafe { ROW_COUNT } {
+        for col in 0..unsafe { COL_COUNT } {
+            let index = ((row * unsafe { COL_COUNT }) + col) * BYTES_PER_PIXEL;
             let r = buf[index] as u32;
             let g = buf[index + 1] as u32;
             let b = buf[index + 2] as u32;
-            //  Set bit to 1 if RGB is above threshold
-            if r + g + b >= min * 3
-                &&  r + g + b <= max * 3 {
+            //  Set bit to 1 (pixel off) if RGB is outside min and max threshold
+            if (r + g + b) < (min * 3)
+                ||  (r + g + b) > (max * 3) {
                 byte = byte | 1;
             }
             //  Shift the bit
-            if index % 8 < 7 {
+            bit_count += 1;
+            if bit_count % 8 > 0 {
                 byte = byte << 1;
                 continue;
             }
+
             //  Print the byte
-            if count > 0 { print!(" ") }
+            if byte_count % BYTES_PER_LINE > 0 { print!(" ") }
             print!("0x{:02x},", byte);
             byte = 0;
-            count += 1;
-            if count >= BYTES_PER_LINE {
-                count = 0;
-                print!("\n");
-            }
+            byte_count += 1;
+            if (byte_count + 1) % BYTES_PER_LINE == 0 { print!("\n"); }
         }
     }
     Ok(())
