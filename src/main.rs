@@ -118,8 +118,8 @@ fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     let mut byte_count = 0;
     let mut bit_count = 0;
     let mut byte: u8 = 0;
-    for row in 0..unsafe { ROW_COUNT } {
-        for col in 0..unsafe { COL_COUNT } {
+    for col in 0..unsafe { COL_COUNT } {
+        for row in 0..unsafe { ROW_COUNT } {
             let index = ((row * unsafe { COL_COUNT }) + col) * BYTES_PER_PIXEL;
             let r = buf[index] as u32;
             let g = buf[index + 1] as u32;
