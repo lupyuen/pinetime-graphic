@@ -97,7 +97,8 @@ fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
 }
 
 /// Dump image as black and white
-/// cargo run -- --min 0 --max 128 uart-cartoon2.png
+/// cargo run -- --min 0  --max 85  uart-cartoon2.png >image_black.inc
+/// cargo run -- --min 86 --max 172 uart-cartoon2.png >image_red.inc
 fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     println!("//  Min: {}, Max: {}", c.min, c.max);
     let min: u32 = c.min.parse().unwrap();
