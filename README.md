@@ -1,8 +1,28 @@
-# Convert PNG graphic to RGB565 for ST7789, PineTime Watch Faces and PineTime Bootloader
+# Convert PNG graphic to Triple Colour and RGB565 for Grove E-Ink Display, ST7789, PineTime Watch Faces and PineTime Bootloader
+
+## Triple Colour Image for Grove E-Ink Display
+
+To convert the PNG image `uart-cartoon2.png` (202 x 104 resolution) to C arrays `image_black.inc` (black bitmap) and `image_red.inc` (red bitmap)...
+
+```bash
+# Download the source code
+git clone https://github.com/lupyuen/pinetime-graphic
+cd pinetime-graphic
+
+# TODO: Copy uart-cartoon2.png to the pinetime-graphic folder
+
+# Convert the PNG file to a C array (black bitmap) with these min and max thresholds
+cargo run -- --min 0  --max 85  uart-cartoon2.png >image_black.inc
+
+# Convert the PNG file to a C array (red bitmap) with these min and max thresholds
+cargo run -- --min 86 --max 215 uart-cartoon2.png >image_red.inc
+```
+
+Read the article ["PineCone BL602 Talks UART to Grove E-Ink Display"](https://lupyuen.github.io/articles/uart)
 
 ## ST7789 Image
 
-To convert the PNG image `image.png` (240 x 240 resolution or smaller) to a C array `image.inc`
+To convert the PNG image `image.png` (240 x 240 resolution or smaller) to a C array `image.inc`...
 
 ```bash
 # Download the source code
