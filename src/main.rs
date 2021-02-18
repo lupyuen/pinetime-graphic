@@ -88,17 +88,17 @@ const BYTES_PER_LINE: usize = 16;
 /// Dump image as RGB565 or black and white
 fn dump_image<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     if c.min.len() == 0 && c.max.len() == 0 {
-        //  Dump as RGB565
+        //  If min and max not specified: Dump as RGB565
         dump_image_rgb565(c, fname)
     } else {
-        //  Dump as black and white
+        //  If min and max are specified: Dump as black and white
         dump_image_bw(c, fname)
     }
 }
 
-/// Dump image as black and white
+/// Dump image as black and white. Set the min/max thresholds to dump the black and red bitmaps...
 /// cargo run -- --min 0  --max 85  uart-cartoon2.png >image_black.inc
-/// cargo run -- --min 86 --max 172 uart-cartoon2.png >image_red.inc
+/// cargo run -- --min 86 --max 215 uart-cartoon2.png >image_red.inc
 fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     println!("//  Min: {}, Max: {}", c.min, c.max);
     let min: u32 = c.min.parse().unwrap();
@@ -115,10 +115,15 @@ fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
     // The default options
     reader.next_frame(&mut buf).unwrap();
     println!("//  Rows: {}, Columns: {}, Buffer Size: {}", unsafe { ROW_COUNT }, unsafe { COL_COUNT }, info.buffer_size());
+
     let mut byte_count = 0;
     let mut bit_count = 0;
     let mut byte: u8 = 0;
+    //  Dump each column
     for col in 0..unsafe { COL_COUNT } {
+        //  Flip the columns
+        let col = unsafe{ COL_COUNT } - col - 1;
+        //  Dump each row
         for row in 0..unsafe { ROW_COUNT } {
             let index = ((row * unsafe { COL_COUNT }) + col) * BYTES_PER_PIXEL;
             let r = buf[index] as u32;
@@ -148,7 +153,7 @@ fn dump_image_bw<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
 }
 
 /// Dump image as rgb565
-fn dump_image_rgb565<P: AsRef<Path>>(c: Config, fname: P) -> io::Result<()> {
+fn dump_image_rgb565<P: AsRef<Path>>(_c: Config, fname: P) -> io::Result<()> {
     // The decoder is a build for reader and can be used to set various decoding options
     // via `Transformations`. The default output transformation is `Transformations::EXPAND
     // | Transformations::STRIP_ALPHA`.
